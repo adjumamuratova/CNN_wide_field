@@ -1,4 +1,3 @@
-
 import matplotlib.pyplot as plt
 from torch import nn
 from torch.autograd import Variable
@@ -10,7 +9,6 @@ from CNN_video import CNN
 import datetime
 import numpy as np
 import torch
-
 now = datetime.datetime.now()
 DEVICE = torch.device('cuda:0')
 DATASET_PATH = '/media/aigul/Tom/Aigul/Wide_field/tracks_output_verified'
@@ -28,10 +26,8 @@ print("Full dataset: ", X_full.shape, y_full.shape)
 X_train, X_val, y_train, y_val = train_test_split(X_full, y_full, test_size=0.1, random_state=42)
 print("Train dataset: ", X_train.shape, y_train.shape)
 print("Val dataset: ", X_val.shape, y_val.shape)
-
 train_batch_size = 128
 val_batch_size = 128
-test, targets_train, targets_test = train_test_split(X, Y, test_size=0.1, random_state=42)
 X_train = torch.from_numpy(X_train)
 X_val = torch.from_numpy(X_val)
 Y_train = torch.from_numpy(y_train).type(torch.LongTensor)
@@ -40,6 +36,7 @@ train = torch.utils.data.TensorDataset(X_train, Y_train)
 val = torch.utils.data.TensorDataset(X_val, Y_val)
 train_loader = torch.utils.data.DataLoader(train, batch_size=train_batch_size, shuffle=False)
 val_loader = torch.utils.data.DataLoader(val, batch_size=val_batch_size, shuffle=False)
+
 model = CNN()
 model = model.double()
 model.type(torch.cuda.DoubleTensor)
@@ -48,7 +45,6 @@ LR = 0.0001
 L2_reg = 0.05
 criterion = nn.CrossEntropyLoss().type(torch.cuda.DoubleTensor)
 optimizer = torch.optim.Adam(model.parameters(), lr=LR)
-
 epochs = 150
 train_losses, val_losses = [], []
 accuracy_train = []
@@ -121,9 +117,9 @@ ax[1].plot(f1, label='F1-score')
 ax[1].plot(precision, label='Precision')
 ax[1].plot(recall, label='Recall')
 ax[1].legend(frameon=False)
-
 plt.savefig('CNN_models_saved/Loss_Accuracy_' + now.strftime("%d_%m_%Y_%H:%M") + '.png')
 plt.show()
+
 path_to_torch_model = '/media/aigul/Tom/Aigul/Wide_field/ML_DL_wide_field/CNN_models_saved/model_video_' + now.strftime("%d_%m_%Y_%H:%M") + '.torch'
 torch.save(model.state_dict(), path_to_torch_model)
 model_torch = CNN()
